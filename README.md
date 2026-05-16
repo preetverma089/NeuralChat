@@ -1,6 +1,8 @@
 # ⚡ NeuralChat — AI Chatbot
 
-> Full-stack AI Chatbot built with **MERN Stack**, **LangChain.js**, and **Google Gemini** — featuring real-time streaming, persistent memory, and multi-session support.
+> Full-stack AI Chatbot built with **MERN Stack** and **Groq API** — featuring real-time streaming, persistent memory, and multi-session support.
+
+🔗 **Live Demo:** [neural-chat-beta.vercel.app](https://neural-chat-beta.vercel.app)
 
 ---
 
@@ -8,11 +10,12 @@
 
 | Feature | Details |
 |---|---|
-| 🧠 LangChain Integration | Conversation chains with persistent memory |
 | ⚡ Real-time Streaming | SSE-based token streaming (ChatGPT-style) |
 | 💾 MongoDB Persistence | Full chat history saved per session |
 | 🔄 Multi-Session | Create, switch, delete chat sessions |
-| 🛡️ Input Validation | Express-validator + custom middleware |
+| 🧠 Conversation Memory | Full history passed to AI on every request |
+| 🛡️ Input Validation | express-validator + custom middleware |
+| 🚦 Rate Limiting | Per-IP limits on API and chat endpoints |
 | 🌐 CORS Configured | Ready for cross-origin deployment |
 | 📱 Responsive UI | Works on mobile and desktop |
 
@@ -22,10 +25,10 @@
 
 ### Backend
 - **Node.js + Express** — REST API server
-- **LangChain.js** — LLM orchestration & memory
-- **Google Gemini** (`gemini-1.5-flash`) — AI model (Free tier)
+- **Groq API** (`llama-3.3-70b-versatile`) — AI model (Free tier)
 - **MongoDB + Mongoose** — Database & ODM
 - **express-validator** — Input validation
+- **express-rate-limit** — Rate limiting
 
 ### Frontend
 - **React 18** — UI library
@@ -46,19 +49,19 @@ neuralchat/
 │   │   │   ├── db.js               # MongoDB connection
 │   │   │   └── env.js              # Environment validation
 │   │   ├── controllers/
-│   │   │   ├── chatController.js   # Chat logic
+│   │   │   ├── chatController.js   # Chat logic + SSE headers
 │   │   │   └── sessionController.js
 │   │   ├── middleware/
 │   │   │   ├── errorHandler.js     # Global error handler
 │   │   │   ├── validateRequest.js  # Validation middleware
-│   │   │   └── rateLimiter.js      # Rate limiting
+│   │   │   └── rateLimiter.js      # Rate limiting (api + chat)
 │   │   ├── models/
 │   │   │   └── ChatSession.js      # Mongoose schema
 │   │   ├── routes/
 │   │   │   ├── chatRoutes.js
 │   │   │   └── sessionRoutes.js
 │   │   ├── services/
-│   │   │   └── langchainService.js # LangChain + Gemini logic
+│   │   │   └── chatService.js      # Groq streaming logic
 │   │   └── utils/
 │   │       └── logger.js           # Console logger utility
 │   ├── .env.example
@@ -78,17 +81,16 @@ neuralchat/
     │   │   │   ├── Sidebar.jsx
     │   │   │   └── Header.jsx
     │   │   └── ui/
-    │   │       ├── Loader.jsx
     │   │       └── EmptyState.jsx
     │   ├── hooks/
-    │   │   ├── useChat.js          # Chat logic hook
-    │   │   └── useSessions.js      # Session management hook
+    │   │   ├── useChat.js          # SSE stream consumer
+    │   │   └── useSessions.js      # Session management
     │   ├── pages/
     │   │   └── ChatPage.jsx        # Main page
     │   ├── store/
     │   │   └── chatStore.js        # Zustand global state
     │   ├── utils/
-    │   │   └── markdownParser.js   # Markdown renderer
+    │   │   └── markdownParser.js   # ReactMarkdown component config
     │   ├── App.jsx
     │   └── index.js
     ├── tailwind.config.js
@@ -103,13 +105,13 @@ neuralchat/
 ### Prerequisites
 - Node.js >= 18
 - MongoDB Atlas account (free)
-- Google AI Studio account (free)
+- Groq account (free)
 
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/neuralchat.git
-cd neuralchat
+git clone https://github.com/preetverma089/NeuralChat.git
+cd NeuralChat
 
 # Install server deps
 cd server && npm install
@@ -124,7 +126,7 @@ cd ../client && npm install
 # Server
 cd server
 cp .env.example .env
-# Fill in GEMINI_API_KEY and MONGODB_URI
+# Fill in GROQ_API_KEY and MONGODB_URI
 
 # Client
 cd ../client
@@ -136,7 +138,7 @@ cp .env.example .env.local
 
 | Service | Link | Free Limit |
 |---|---|---|
-| Google Gemini | https://aistudio.google.com/app/apikey | 15 req/min |
+| Groq | https://console.groq.com | 14,400 req/day |
 | MongoDB Atlas | https://cloud.mongodb.com | 512 MB |
 
 ### 4. Run
@@ -158,8 +160,9 @@ App runs at: `http://localhost:3000`
 ### Backend → Render.com
 1. New Web Service → Connect GitHub
 2. Root Directory: `server`
-3. Build: `npm install` | Start: `npm start`
-4. Add all env variables from `.env.example`
+3. Build Command: `npm install`
+4. Start Command: `npm start`
+5. Add env variables from `server/.env.example`
 
 ### Frontend → Vercel
 1. Import GitHub repo
@@ -168,7 +171,7 @@ App runs at: `http://localhost:3000`
 
 ### Database → MongoDB Atlas
 - Already cloud-hosted ✅
-- Whitelist IP: `0.0.0.0/0` for Render access
+- Network Access → Allow `0.0.0.0/0` for Render access
 
 ---
 
