@@ -20,8 +20,11 @@ const PORT = process.env.PORT || 5000;
 // ── Global Middleware ────────────────────────────────────────
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? [process.env.CLIENT_URL]
-    : [/^http:\/\/localhost:\d+$/]; // any localhost port in dev
+    ? [
+        process.env.CLIENT_URL,
+        /\.vercel\.app$/,  // allow all vercel preview URLs
+      ]
+    : [/^http:\/\/localhost:\d+$/];
 
 app.use(
   cors({
