@@ -1,0 +1,57 @@
+# ===========================
+# ENVIRONMENT — NEVER COMMIT!
+# ===========================
+.env
+.env.local
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===========================
+# DEPENDENCIES
+# ===========================
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# ===========================
+# BUILD OUTPUTS
+# ===========================
+client/build/
+dist/
+.next/
+
+# ===========================
+# LOGS
+# ===========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===========================
+# OS FILES
+# ===========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+# ===========================
+# IDE / EDITORS
+# ===========================
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# ===========================
+# MISC
+# ===========================
+coverage/
+.nyc_output/
