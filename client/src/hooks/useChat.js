@@ -17,8 +17,6 @@ const useChat = () => {
     appendChunkToLast,
     replaceLastMessage,
     setIsStreaming,
-    updateSessionTitle,
-    fetchSessions,
   } = useChatStore((state) => state);
 
   const sendMessage = useCallback(
