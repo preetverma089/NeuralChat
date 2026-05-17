@@ -1,7 +1,3 @@
-/**
- * Validates that all required environment variables are present.
- * Exits the process immediately if any are missing.
- */
 export const validateEnv = () => {
   const required = ["GROQ_API_KEY", "MONGODB_URI"];
   const missing = required.filter((key) => !process.env[key]);

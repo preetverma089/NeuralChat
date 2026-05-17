@@ -8,13 +8,9 @@ import {
 
 const router = Router();
 
-/** GET  /api/sessions        — List all sessions */
 router.get("/", getAllSessions);
-
-/** POST /api/sessions        — Create new session */
 router.post("/", createSession);
 
-/** DELETE /api/sessions/:sessionId */
 router.delete(
   "/:sessionId",
   [

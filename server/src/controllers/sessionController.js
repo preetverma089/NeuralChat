@@ -2,10 +2,6 @@ import { v4 as uuidv4 } from "uuid";
 import ChatSession from "../models/ChatSession.js";
 import logger from "../utils/logger.js";
 
-/**
- * GET /api/sessions
- * Returns all sessions (sorted by latest update) for the sidebar.
- */
 export const getAllSessions = async (req, res, next) => {
   try {
     const sessions = await ChatSession.find(
@@ -21,10 +17,6 @@ export const getAllSessions = async (req, res, next) => {
   }
 };
 
-/**
- * POST /api/sessions
- * Creates a new session and returns its ID.
- */
 export const createSession = async (req, res, next) => {
   try {
     const sessionId = uuidv4();
@@ -34,10 +26,6 @@ export const createSession = async (req, res, next) => {
   }
 };
 
-/**
- * DELETE /api/sessions/:sessionId
- * Deletes a session and all its messages.
- */
 export const deleteSession = async (req, res, next) => {
   const { sessionId } = req.params;
 
@@ -45,15 +33,11 @@ export const deleteSession = async (req, res, next) => {
     const result = await ChatSession.deleteOne({ sessionId });
 
     if (result.deletedCount === 0) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Session not found" });
+      return res.status(404).json({ success: false, error: "Session not found" });
     }
 
     logger.info(`Session deleted: ${sessionId}`);
-    res
-      .status(200)
-      .json({ success: true, message: "Session deleted successfully" });
+    res.status(200).json({ success: true, message: "Session deleted successfully" });
   } catch (error) {
     next(error);
   }

@@ -6,7 +6,6 @@ You have a great memory and always refer back to the conversation history when r
 Keep responses clear, concise, and friendly. Format code with proper markdown code blocks.
 If you don't know something, say so honestly. Never make up facts.`;
 
-// ── Lazy singleton ────────────────────────────────────────────
 let client = null;
 
 const getClient = () => {
@@ -17,22 +16,12 @@ const getClient = () => {
   return client;
 };
 
-// ── Convert stored messages to OpenAI-compatible format ───────
 const toMessages = (history, userMessage) => [
   { role: "system", content: SYSTEM_PROMPT },
   ...history.map((m) => ({ role: m.role === "assistant" ? "assistant" : "user", content: m.content })),
   { role: "user", content: userMessage },
 ];
 
-/**
- * Stream a chat response using Groq.
- * Calls onChunk(text) for each token — keeps HTTP concerns in the controller.
- *
- * @param {string}   userMessage - The user's latest message
- * @param {Array}    history     - Prior messages from MongoDB (role, content)
- * @param {Function} onChunk     - Called with each text token as it arrives
- * @returns {string}             - The complete AI response text
- */
 export const streamChatResponse = async (userMessage, history, onChunk) => {
   let fullResponse = "";
 

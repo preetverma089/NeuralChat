@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// ── Sub-schema: Individual Message ───────────────────────────
 const messageSchema = new mongoose.Schema(
   {
     role: {
@@ -15,13 +14,12 @@ const messageSchema = new mongoose.Schema(
     },
   },
   {
-    _id: false,           // No separate _id for subdocuments
+    _id: false,
     timestamps: false,
     versionKey: false,
   }
 );
 
-// ── Main Schema: Chat Session ────────────────────────────────
 const chatSessionSchema = new mongoose.Schema(
   {
     sessionId: {
@@ -43,23 +41,19 @@ const chatSessionSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true,     // Adds createdAt and updatedAt automatically
+    timestamps: true,
     versionKey: false,
   }
 );
 
-// ── Instance method: Add a message ───────────────────────────
 chatSessionSchema.methods.addMessage = function (role, content) {
   this.messages.push({ role, content });
 
-  // Auto-title from first user message
   if (this.messages.length === 1 && role === "user") {
-    this.title =
-      content.length > 55 ? content.substring(0, 55) + "..." : content;
+    this.title = content.length > 55 ? content.substring(0, 55) + "..." : content;
   }
 };
 
-// ── Static method: Find or create session ────────────────────
 chatSessionSchema.statics.findOrCreate = async function (sessionId) {
   let session = await this.findOne({ sessionId });
   if (!session) {

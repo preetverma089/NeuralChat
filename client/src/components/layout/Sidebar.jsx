@@ -3,26 +3,41 @@ import useSessions from "../../hooks/useSessions";
 import useChatStore from "../../store/chatStore";
 
 const Sidebar = () => {
-  const { sessions, activeSessionId, createNewSession, switchSession, deleteSession } =
-    useSessions();
-  const { isSidebarOpen, toggleSidebar } = useChatStore();
+  const {
+    sessions,
+    activeSessionId,
+    createNewSession,
+    switchSession,
+    deleteSession,
+  } = useSessions();
+  const { isSidebarOpen, toggleSidebar, setSidebarOpen } = useChatStore();
+
+  const handleSelectSession = (sessionId) => {
+    switchSession(sessionId);
+    if (window.innerWidth < 768) setSidebarOpen(false);
+  };
+
+  const handleNewChat = async () => {
+    await createNewSession();
+    if (window.innerWidth < 768) setSidebarOpen(false);
+  };
 
   return (
     <>
-      {/* Mobile overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-10 md:hidden"
+          className="fixed inset-0 bg-black/60 z-20 md:hidden"
           onClick={toggleSidebar}
         />
       )}
 
       <aside
         className={`
-          fixed md:relative z-20 h-full
+          fixed md:relative z-30 h-full w-72 md:w-64
           bg-dark-800 border-r border-dark-600
-          flex flex-col transition-all duration-300 ease-in-out
-          ${isSidebarOpen ? "w-64" : "w-0 overflow-hidden"}
+          flex flex-col
+          transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0 md:w-0 md:overflow-hidden md:border-r-0"}
         `}
       >
         {/* Header */}
@@ -35,7 +50,7 @@ const Sidebar = () => {
           </div>
           <button
             onClick={toggleSidebar}
-            className="text-gray-500 hover:text-white p-1 rounded-md hover:bg-dark-700 transition-colors"
+            className="text-gray-500 hover:text-white p-2 rounded-lg hover:bg-dark-700 transition-colors"
             aria-label="Close sidebar"
           >
             ✕
@@ -45,12 +60,13 @@ const Sidebar = () => {
         {/* New Chat Button */}
         <div className="p-3 shrink-0">
           <button
-            onClick={createNewSession}
+            onClick={handleNewChat}
             className="
-              w-full py-2.5 px-4 rounded-xl
+              w-full py-3 px-4 rounded-xl
               bg-brand hover:bg-brand-dark
               text-white text-sm font-semibold
-              transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand/20
+              transition-all duration-200 active:scale-95
+              hover:shadow-lg hover:shadow-brand/20
             "
           >
             + New Chat
@@ -58,7 +74,7 @@ const Sidebar = () => {
         </div>
 
         {/* Session List */}
-        <nav className="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto px-2 pb-6 space-y-0.5">
           {sessions.length === 0 ? (
             <p className="text-center text-gray-600 text-xs mt-8 px-4">
               No chats yet. Start a new conversation!
@@ -69,7 +85,7 @@ const Sidebar = () => {
                 key={session.sessionId}
                 session={session}
                 isActive={session.sessionId === activeSessionId}
-                onSelect={() => switchSession(session.sessionId)}
+                onSelect={() => handleSelectSession(session.sessionId)}
                 onDelete={() => deleteSession(session.sessionId)}
               />
             ))
@@ -86,7 +102,7 @@ const SessionItem = ({ session, isActive, onSelect, onDelete }) => (
     onClick={onSelect}
     className={`
       group flex items-center justify-between
-      px-3 py-2.5 rounded-xl cursor-pointer
+      px-3 py-3 rounded-xl cursor-pointer
       transition-all duration-150 text-sm
       ${
         isActive
@@ -104,9 +120,10 @@ const SessionItem = ({ session, isActive, onSelect, onDelete }) => (
         onDelete();
       }}
       className="
-        opacity-0 group-hover:opacity-100
-        text-gray-600 hover:text-red-400
-        text-xs p-1 rounded transition-all
+        opacity-100 md:opacity-0 md:group-hover:opacity-100
+        text-gray-600 hover:text-red-400 active:text-red-400
+        text-xs p-1.5 rounded-lg transition-all
+        touch-manipulation
       "
       aria-label="Delete session"
     >

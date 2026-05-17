@@ -1,7 +1,3 @@
-/**
- * Simple colored console logger.
- * Avoids adding a heavy logging library for this project size.
- */
 const colors = {
   reset: "\x1b[0m",
   green: "\x1b[32m",

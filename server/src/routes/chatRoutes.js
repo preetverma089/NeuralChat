@@ -6,10 +6,6 @@ import { chatLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
 
-/**
- * POST /api/chat/message
- * Body: { message: string, sessionId: string }
- */
 router.post(
   "/message",
   chatLimiter,
@@ -31,9 +27,6 @@ router.post(
   sendMessage
 );
 
-/**
- * GET /api/chat/history/:sessionId
- */
 router.get(
   "/history/:sessionId",
   [

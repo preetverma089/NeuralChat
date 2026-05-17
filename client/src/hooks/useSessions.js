@@ -2,9 +2,6 @@ import { useCallback } from "react";
 import axiosInstance from "../api/axiosInstance";
 import useChatStore from "../store/chatStore";
 
-/**
- * Manages session list, creation, switching, and deletion.
- */
 const useSessions = () => {
   const {
     sessions,
@@ -18,7 +15,6 @@ const useSessions = () => {
     setIsStreaming,
   } = useChatStore();
 
-  /** Fetch all sessions from the server */
   const fetchSessions = useCallback(async () => {
     try {
       const data = await axiosInstance.get("/sessions");
@@ -28,7 +24,6 @@ const useSessions = () => {
     }
   }, [setSessions]);
 
-  /** Create a new session and switch to it */
   const createNewSession = useCallback(async () => {
     try {
       const data = await axiosInstance.post("/sessions");
@@ -43,7 +38,6 @@ const useSessions = () => {
     }
   }, [addSession, setActiveSession, clearMessages, setIsStreaming]);
 
-  /** Load a session's history and switch to it */
   const switchSession = useCallback(
     async (sessionId) => {
       if (sessionId === activeSessionId) return;
@@ -59,7 +53,6 @@ const useSessions = () => {
     [activeSessionId, setMessages, setActiveSession, setIsStreaming]
   );
 
-  /** Delete a session; if active, start a new one */
   const deleteSession = useCallback(
     async (sessionId) => {
       try {
