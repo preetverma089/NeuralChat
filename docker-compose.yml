@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./server
+    container_name: neuralchat-server
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      args:
+        - REACT_APP_API_URL=http://localhost:5000/api
+    container_name: neuralchat-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    restart: unless-stopped
